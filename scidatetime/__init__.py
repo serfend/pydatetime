@@ -186,7 +186,7 @@ class DateTime(datetime.datetime):
         t = datetime.timedelta
         if isinstance(other, int) or isinstance(other, float):
             other = t(milliseconds=other)
-        return super().__add__(other)
+        return DateTime(super().__add__(other))
 
     def __sub__(self, other):
         t = datetime.timedelta
@@ -201,7 +201,7 @@ class DateTime(datetime.datetime):
             raise Exception(f'invalid type in date:{type(other)}')
         other = DateTime(other.getTime())
 
-        return super().__sub__(other)
+        return DateTime(super().__sub__(other))
 
     def __eq__(self, other: object) -> bool:
         other = DateTime(other)
