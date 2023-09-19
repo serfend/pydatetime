@@ -60,4 +60,4 @@ print(DateTime('2023-01-20 10:00:00').toRelativeTime()) # xxx年前
 
 ## Status
 
-![Alt](https://repobeats.axiom.co/api/embed/8efef7d51cfb5c6fb13f09356986a10f187b9fcd.svg "Repobeats analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/05f8549ceb608c78dfa4b74d83d61b0812bf7cd8.svg "Repobeats analytics image")
