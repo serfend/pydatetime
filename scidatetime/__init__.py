@@ -204,8 +204,5 @@ class DateTime(datetime.datetime):
         return super().__sub__(other)
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, int) or isinstance(other, float):
-            other = DateTime.fromtimestamp(other)
-        elif isinstance(other, str):
-            other = DateTime.fromstring(other)
+        other = DateTime(other)
         return self.getTime() == other.getTime()
