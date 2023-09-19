@@ -32,7 +32,7 @@ def test_date():
     t = x.getTime()
     assert 1673856677355 == t
 
-    assert x.toRelativeTime() == date_string
+    assert x.toRelativeTime(show_full_date_if_over=30) == date_string
     assert x.tostring() == date_string
 
     x = DateTime(date_mil_string)
