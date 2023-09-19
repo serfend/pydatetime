@@ -1,13 +1,13 @@
 
 
 <p align="center">
-    <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fserfend%2Fpydatetime%2F"><img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fserfend%2Fpydatetime%2F&labelColor=%23697689&countColor=%23ff8a65&style=plastic&labelStyle=none" /></a> 
-    <a href="https://pypi.python.org/pypi/pydatetime/"><img alt="pypi version" src="https://img.shields.io/pypi/v/pydatetime.svg" /></a> 
-    <a href="https://pypistats.org/packages/pydatetime"><img alt="pypi download" src="https://img.shields.io/pypi/dm/pydatetime.svg" /></a>
-    <a href="https://github.com/serfend/pydatetime/releases"><img alt="GitHub release" src="https://img.shields.io/github/release/serfend/pydatetime.svg?style=flat-square" /></a>
-    <a href="https://github.com/serfend/pydatetime/releases"><img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/serfend/pydatetime/total.svg?style=flat-square&color=%2364ff82" /></a>
-    <a href="https://github.com/serfend/pydatetime/commits"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/serfend/pydatetime.svg?style=flat-square" /></a>
-    <a href="https://github.com/serfend/pydatetime/actions/workflows/pytest.yml"><img alt="GitHub Workflow Status" src="https://github.com/serfend/pydatetime/actions/workflows/pytest.yml/badge.svg" /></a>
+    <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fserfend%2Fscidatetime%2F"><img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fserfend%2Fscidatetime%2F&labelColor=%23697689&countColor=%23ff8a65&style=plastic&labelStyle=none" /></a> 
+    <a href="https://pypi.python.org/pypi/scidatetime/"><img alt="pypi version" src="https://img.shields.io/pypi/v/scidatetime.svg" /></a> 
+    <a href="https://pypistats.org/packages/scidatetime"><img alt="pypi download" src="https://img.shields.io/pypi/dm/scidatetime.svg" /></a>
+    <a href="https://github.com/serfend/scidatetime/releases"><img alt="GitHub release" src="https://img.shields.io/github/release/serfend/scidatetime.svg?style=flat-square" /></a>
+    <a href="https://github.com/serfend/scidatetime/releases"><img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/serfend/scidatetime/total.svg?style=flat-square&color=%2364ff82" /></a>
+    <a href="https://github.com/serfend/scidatetime/commits"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/serfend/scidatetime.svg?style=flat-square" /></a>
+    <a href="https://github.com/serfend/scidatetime/actions/workflows/pytest.yml"><img alt="GitHub Workflow Status" src="https://github.com/serfend/scidatetime/actions/workflows/pytest.yml/badge.svg" /></a>
 </p>
 
 
@@ -17,14 +17,14 @@
 
 # What?
 
-pydatetime is python module for DateTime handle.
+scidatetime is python module for DateTime handle.
 
 
 
 ## Install
 
 ```shell
-pip install pydatetime
+pip install scidatetime
 ```
 
 
@@ -32,7 +32,7 @@ pip install pydatetime
 ## Usage
 
 ```python
-from pydatetime import DateTime
+from scidatetime import DateTime
 # 当前时间
 print(DateTime()) # 2023-09-19 14:50:43.570560+08:00
 # 指定日期

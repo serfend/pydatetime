@@ -1,4 +1,4 @@
-from pydatetime import *
+from scidatetime import *
 
 
 def test_fixed_second():
