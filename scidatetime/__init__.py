@@ -43,18 +43,21 @@ class DateTime(datetime.datetime):
         ...
 
     def __new__(cls, year: int = ..., month: int = ..., day: int = ..., hour: int = ..., minute: int = ..., second: int = ..., microsecond: int = ..., tzinfo: datetime.timezone | None = ..., *, fold: int = 0):
+        ii = isinstance
         if year is Ellipsis:
             return DateTime.now()
-        if isinstance(year, int) and month is Ellipsis:
+        if ii(year, float):
+            year = int(year)
+        if ii(year, int) and month is Ellipsis:
             return DateTime.fromtimestamp(year)
-        if isinstance(year, str):
+        if ii(year, str):
             x = DateTime.fromstring(year)
             return x
-        if isinstance(year, datetime.datetime):
+        if ii(year, datetime.datetime):
             x = year
             return DateTime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, x.tzinfo, fold=x.fold)
 
-        elif isinstance(year, datetime.date):
+        elif ii(year, datetime.date):
             x: datetime.date = year
             return DateTime(x.year, x.month, x.day, 0, 0, 0, 0, None, fold=0)
 
@@ -175,7 +178,7 @@ class DateTime(datetime.datetime):
             if v_month < 0:
                 v_month += 12
             return f'{v_month}月{suffix}'
-        
+
         v_year = abs(self.year - target.year)
         return f'{v_year}年{suffix}'
 
