@@ -5,7 +5,7 @@ import shutil
 import sys
 
 from setuptools import setup, find_packages
-pck_name = 'sgtpyutils'
+pck_name = 'pydatetime'
 pck_dict = {}
 pck_dict[pck_name] = pck_name
 package_dir = os.path.dirname(os.path.realpath(__file__))
