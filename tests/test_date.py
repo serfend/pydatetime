@@ -29,6 +29,9 @@ def test_date():
     date_mil_string = '2023-01-16 16:11:17.355789'
     date_string = '2023-01-16 16:11:17'
     x = DateTime.fromstring(date_mil_string)
+    t = x.getTime()
+    assert 1673856677355 == t
+
     assert x.toRelativeTime() == date_string
     assert x.tostring() == date_string
 
@@ -50,8 +53,6 @@ def test_date():
     x2 = DateTime.fromstring('2023-01-16 16:11:27.355789')
     assert x2.toRelativeTime(x) == '9秒后'
 
-    t = x.getTime()
-    assert 1673885477355 == t
 
     assert DateTime.fromtimestamp(t / 1e3).tostring() == date_string
     assert DateTime.fromtimestamp(t).tostring() == date_string
@@ -63,10 +64,12 @@ def test_date():
 
 
 def test_offset_date():
-    delta = timedelta(seconds=-time_timezone)
+    # 时区为当前用户时区
+    delta = timedelta(seconds=time_timezone)
     tz = timezone(delta)
     x1 = DateTime(f'2023-08-19T15:00:00{tz}')
     x2 = DateTime('2023-08-19 15:00:00')
+    # 则含和不含时区的结果，相差时间应为0
     assert (x2 - x1).total_seconds() == 0
 
 
