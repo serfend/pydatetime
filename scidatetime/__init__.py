@@ -201,7 +201,10 @@ class DateTime(datetime.datetime):
             raise Exception(f'invalid type in date:{type(other)}')
         other = DateTime(other.getTime())
 
-        return DateTime(super().__sub__(other))
+        result = super().__sub__(other)
+        # 若为timedelta则直接返回，否则转换为DateTime
+        result = result if isinstance(result, timedelta) else DateTime(result)
+        return result
 
     def __eq__(self, other: object) -> bool:
         other = DateTime(other)
