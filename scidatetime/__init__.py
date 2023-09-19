@@ -202,8 +202,6 @@ class DateTime(datetime.datetime):
         other = DateTime(other.getTime())
 
         result = super().__sub__(other)
-        # 若为datetime.datetime转换为DateTime
-        result = DateTime(result) if isinstance(result, datetime.datetime) else result
         return result
 
     def __eq__(self, other: object) -> bool:
