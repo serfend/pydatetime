@@ -45,7 +45,7 @@ class DateTime(datetime.datetime):
     def __new__(cls, year: int = ..., month: int = ..., day: int = ..., hour: int = ..., minute: int = ..., second: int = ..., microsecond: int = ..., tzinfo: datetime.timezone | None = ..., *, fold: int = 0):
         if year is Ellipsis:
             return DateTime.now()
-        if isinstance(year, int) and month is None:
+        if isinstance(year, int) and month is Ellipsis:
             return DateTime.fromtimestamp(year)
         if isinstance(year, str):
             x = DateTime.fromstring(year)
@@ -87,13 +87,13 @@ class DateTime(datetime.datetime):
 
     def getTime(self, delta: int = None) -> int:
         '''
-        获取毫秒时间戳，并将时间输出为UTC+00:00
+        获取毫秒时间戳，并将时间输出为当前时区时间
         '''
         # 若未定义当前时区，则使用当前计算机时区
         if delta is None:
-            delta = self.getDelta()
+            delta = 0  # self.getDelta()
 
-        # 将时间转换为UTC+0
+        # 将时间转换为UTC+X
         r = self.timestamp() - delta
         r *= 1e3  # 转换为毫秒
         return int(r)
@@ -137,13 +137,13 @@ class DateTime(datetime.datetime):
             # 表示使用的毫秒制
             t /= 1e3
 
-        # 将时间转换为UTC+0
-        delta = time_timezone if tz is None else 0
+        # 将时间转换为UTC+X，不转换，则时间正确
+        delta = 0 if tz is None else 0
         t += delta
 
         return super().fromtimestamp(t, tz)
 
-    def toRelativeTime(self, target: DateTime = ..., show_full_date_if_over: int = 30) -> str:
+    def toRelativeTime(self, target: DateTime = ..., show_full_date_if_over: int = None) -> str:
         '''
         转换时间为相对时间
         @param target:DateTime:对比的时间，默认是现在
@@ -151,9 +151,10 @@ class DateTime(datetime.datetime):
         '''
         if target is Ellipsis:
             target = DateTime(tzinfo=self.tzinfo)
-        r = target - self
+        target = DateTime(target)
+        r: timedelta = target - self
         delta_time = r.days + r.seconds / 86400
-        if delta_time > show_full_date_if_over:
+        if not show_full_date_if_over is None and delta_time > show_full_date_if_over:
             return self.tostring()
         suffix = '后' if delta_time < 0 else '前'
         s_second = 1 / 86400
@@ -168,7 +169,15 @@ class DateTime(datetime.datetime):
             return f'{int(v_time)}天{suffix}'
         if v_time < 30:
             return f'{int(v_time/7)}周{suffix}'
-        return f'{int(v_time)}天{suffix}'
+
+        if v_time < 365:
+            v_month = self.month - target.month
+            if v_month < 0:
+                v_month += 12
+            return f'{v_month}月{suffix}'
+        
+        v_year = abs(self.year - target.year)
+        return f'{v_year}年{suffix}'
 
     def __add__(self, other):
         t = datetime.timedelta
@@ -187,7 +196,7 @@ class DateTime(datetime.datetime):
             return super().__sub__(other)
         if not isinstance(other, datetime.datetime):
             raise Exception(f'invalid type in date:{type(other)}')
-        other = DateTime.fromtimestamp(other.getTime())
+        other = DateTime(other.getTime())
 
         return super().__sub__(other)
 
@@ -196,5 +205,4 @@ class DateTime(datetime.datetime):
             other = DateTime.fromtimestamp(other)
         elif isinstance(other, str):
             other = DateTime.fromstring(other)
-
-        return super().__eq__(other)
+        return self.getTime() == other.getTime()
