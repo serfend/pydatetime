@@ -30,7 +30,7 @@ def test_date():
     date_string = '2023-01-16 16:11:17'
     x = DateTime.fromstring(date_mil_string)
     t = x.getTime()
-    assert 1673856677355 == t
+    assert 1673885477355 == int(t) - time_timezone * 1e3
 
     assert x.toRelativeTime(show_full_date_if_over=30) == date_string
     assert x.tostring() == date_string
@@ -54,8 +54,8 @@ def test_date():
     assert x2.toRelativeTime(x) == '9秒后'
 
 
-    assert DateTime.fromtimestamp(t / 1e3).tostring() == date_string
-    assert DateTime.fromtimestamp(t).tostring() == date_string
+    assert DateTime(t / 1e3).tostring() == date_string
+    assert DateTime(t).tostring() == date_string
 
     yesterday = x - 86400e3
     assert yesterday == '2023-01-15 16:11:17.355789'
