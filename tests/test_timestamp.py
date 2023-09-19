@@ -7,4 +7,6 @@ def test_fixed_second():
     assert x.getTime() == int(v * 1e3)
 
 def test_second():
-    assert DateTime(1695106243) == DateTime('2023-09-19 14:50:43')
+    utc0_time = DateTime(1695106243)
+    target = DateTime('2023-09-19 06:50:43') - time_timezone * 1e3
+    assert utc0_time == target
