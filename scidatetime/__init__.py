@@ -22,7 +22,7 @@ timezone = datetime.timezone
 timedelta = datetime.timedelta
 time = datetime.time
 
-TIME_START = 946656000  # 2000-1-1
+TIME_START = 946684800  # 2000-1-1UTC0
 
 
 class DateTime(datetime.datetime):
