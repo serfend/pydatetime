@@ -22,6 +22,8 @@ timezone = datetime.timezone
 timedelta = datetime.timedelta
 time = datetime.time
 
+TIME_START = 946656000  # 2000-1-1
+
 
 class DateTime(datetime.datetime):
     Format = DateFormat
@@ -43,6 +45,9 @@ class DateTime(datetime.datetime):
         ...
 
     def __new__(cls, year: int = ..., month: int = ..., day: int = ..., hour: int = ..., minute: int = ..., second: int = ..., microsecond: int = ..., tzinfo: datetime.timezone | None = ..., *, fold: int = 0):
+        if year == None:
+            return DateTime('2000-1-1')  # default set timestamp
+
         ii = isinstance
         if year is Ellipsis:
             return DateTime.now()
@@ -135,6 +140,11 @@ class DateTime(datetime.datetime):
 
     @classmethod
     def fromtimestamp(cls, t: int, tz=None):
+        if t is None:
+            t = TIME_START * 1e3
+        if t < TIME_START:
+            t = (TIME_START + t) * 1e3
+
         year_2300_second = 10000000000
         if t > year_2300_second:
             # 表示使用的毫秒制
@@ -144,7 +154,8 @@ class DateTime(datetime.datetime):
         delta = 0 if tz is None else 0
         t += delta
 
-        return super().fromtimestamp(t, tz)
+        x = super().fromtimestamp(t, tz)
+        return x
 
     def toRelativeTime(self, target: DateTime = ..., show_full_date_if_over: int = None) -> str:
         '''
