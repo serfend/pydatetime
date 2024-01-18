@@ -20,7 +20,7 @@ class DateFormat(enum.Enum):
 
 timezone = datetime.timezone
 timedelta = datetime.timedelta
-time = datetime.time
+datetime_time = datetime.time
 
 TIME_START = 946684800  # 2000-1-1UTC0
 
