@@ -8,8 +8,8 @@ _EPOCH = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
 
 
 class DateFormat(enum.Enum):
-    YMD = f'%Y-%m-%d'
-    HMS = f'%H:%M:%S'
+    YMD = '%Y-%m-%d'
+    HMS = '%H:%M:%S'
     DEFAULT = f'{YMD} {HMS}'
     DEFAULT_MIL = f'{DEFAULT}.%f'
     T = f'{YMD}T{HMS}'
@@ -41,11 +41,20 @@ class DateTime(datetime.datetime):
         ...
 
     @overload
-    def __new__(cls, year: int, month: int, day: int, hour: int = ..., minute: int = ..., second: int = ..., microsecond: int = ..., tzinfo: datetime.timezone | None = ..., *, fold: int = ...):
+    def __new__(
+            cls, year: int, month: int, day: int,
+            hour: int = ..., minute: int = ..., second: int = ...,
+            microsecond: int = ...,
+            tzinfo: datetime.timezone | None = ..., *, fold: int = ...):
         ...
 
-    def __new__(cls, year: int = ..., month: int = ..., day: int = ..., hour: int = ..., minute: int = ..., second: int = ..., microsecond: int = ..., tzinfo: datetime.timezone | None = ..., *, fold: int = 0):
-        if year == None:
+    def __new__(
+        cls, year: int = ..., month: int = ..., day: int = ...,
+        hour: int = ..., minute: int = ..., second: int = ...,
+        microsecond: int = ...,
+        tzinfo: datetime.timezone | None = ..., *, fold: int = 0,
+    ):
+        if year is None:
             return DateTime('2000-1-1')  # default set timestamp
 
         ii = isinstance
@@ -60,7 +69,12 @@ class DateTime(datetime.datetime):
             return x
         if ii(year, datetime.datetime):
             x = year
-            return DateTime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, x.tzinfo, fold=x.fold)
+            args = (
+                x.year, x.month, x.day,
+                x.hour, x.minute, x.second, x.microsecond,
+                x.tzinfo,
+            )
+            return DateTime(*args, fold=x.fold)
 
         elif ii(year, datetime.date):
             x: datetime.date = year
@@ -106,18 +120,26 @@ class DateTime(datetime.datetime):
         r *= 1e3  # 转换为毫秒
         return int(r)
 
-    def tostring(self, format: str = DateFormat.DEFAULT, tz_info: datetime.timezone = None) -> str:
+    def tostring(
+        self,
+        format: str = DateFormat.DEFAULT,
+        tz_info: datetime.timezone = None,
+    ) -> str:
         '''
         格式化输出字符串，默认输出UTC+00:00的数值
         @param format:str:输出的格式
         @param tz_info:TzInfo:时区信息
         '''
+        if format is None:
+            format = DateFormat.DEFAULT
         if isinstance(format, DateFormat):
             format = format.value
-        delta = self.getDelta(tz_info)
-        if delta != 0:
-            x = DateTime.fromtimestamp(self.getTime(delta))
-            return self.strftime(format)
+
+        # 暂时不考虑时区
+        # delta = self.getDelta(tz_info)
+        # if delta != 0:
+        #     x = DateTime.fromtimestamp(self.getTime(delta))
+        #     return x.strftime(format)
 
         return self.strftime(format)
 
@@ -157,7 +179,11 @@ class DateTime(datetime.datetime):
         x = super().fromtimestamp(t, tz)
         return x
 
-    def toRelativeTime(self, target: DateTime = ..., show_full_date_if_over: int = None) -> str:
+    def toRelativeTime(
+        self,
+        target: DateTime = ...,
+        show_full_date_if_over: int = None,
+    ) -> str:
         '''
         转换时间为相对时间
         @param target:DateTime:对比的时间，默认是现在
@@ -168,7 +194,7 @@ class DateTime(datetime.datetime):
         target = DateTime(target)
         r: timedelta = target - self
         delta_time = r.days + r.seconds / 86400
-        if not show_full_date_if_over is None and delta_time > show_full_date_if_over:
+        if show_full_date_if_over is not None and delta_time > show_full_date_if_over:
             return self.tostring()
         suffix = '后' if delta_time < 0 else '前'
         s_second = 1 / 86400
