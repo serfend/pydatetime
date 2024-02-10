@@ -84,6 +84,23 @@ class DateTime(datetime.datetime):
             d = datetime.timedelta(seconds=-time_timezone)
             tzinfo = datetime.timezone(d)
 
+        if year is Ellipsis:
+            year = 2000
+        if month is Ellipsis:
+            month = 1
+        if day is Ellipsis:
+            day = 1
+        if hour is Ellipsis:
+            hour = 0
+        if minute is Ellipsis:
+            minute = 0
+        if second is Ellipsis:
+            second = 0
+        if microsecond is Ellipsis:
+            microsecond = 0
+        if tzinfo is Ellipsis:
+            tzinfo = None
+
         t = super().__new__(cls, year, month, day, hour, minute,
                             second, microsecond, tzinfo, fold=fold)
         return t
