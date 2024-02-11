@@ -227,7 +227,7 @@ class DateTime(datetime.datetime):
 
         if v_time < 365:
             v_month = target.month - self.month
-            if v_month < 0:
+            if v_month <= 0:
                 v_month += 12
             return f'{v_month}月{suffix}'
 
