@@ -80,7 +80,7 @@ class DateTime(datetime.datetime):
             x: datetime.date = year
             return DateTime(x.year, x.month, x.day, 0, 0, 0, 0, None, fold=0)
 
-        if tzinfo is None:  # 无时区时，默认使用当前时区
+        if tzinfo is None or tzinfo is Ellipsis:  # 无时区时，默认使用当前时区
             d = datetime.timedelta(seconds=-time_timezone)
             tzinfo = datetime.timezone(d)
 
@@ -98,8 +98,6 @@ class DateTime(datetime.datetime):
             second = 0
         if microsecond is Ellipsis:
             microsecond = 0
-        if tzinfo is Ellipsis:
-            tzinfo = None
 
         t = super().__new__(cls, year, month, day, hour, minute,
                             second, microsecond, tzinfo, fold=fold)
