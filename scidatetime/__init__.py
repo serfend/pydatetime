@@ -1,4 +1,5 @@
 from __future__ import annotations
+import typing
 import enum
 from typing import overload
 import datetime
@@ -27,6 +28,8 @@ TIME_START = 946684800  # 2000-1-1UTC0
 
 class DateTime(datetime.datetime):
     Format = DateFormat
+    Default_Format = DateFormat.DEFAULT
+    Default_Format_Converter: typing.Callable = None
 
     @overload
     def __new__(cls, date: datetime.datetime):
@@ -146,15 +149,17 @@ class DateTime(datetime.datetime):
         @param tz_info:TzInfo:时区信息
         '''
         if format is None:
-            format = DateFormat.DEFAULT
+            format = DateTime.Default_Format
         if isinstance(format, DateFormat):
             format = format.value
+        if isinstance(DateTime.Default_Format_Converter, typing.Callable):
+            return DateTime.Default_Format_Converter(self)
 
-        # 暂时不考虑时区
-        # delta = self.getDelta(tz_info)
-        # if delta != 0:
-        #     x = DateTime.fromtimestamp(self.getTime(delta))
-        #     return x.strftime(format)
+            # 暂时不考虑时区
+            # delta = self.getDelta(tz_info)
+            # if delta != 0:
+            #     x = DateTime.fromtimestamp(self.getTime(delta))
+            #     return x.strftime(format)
 
         return self.strftime(format)
 
