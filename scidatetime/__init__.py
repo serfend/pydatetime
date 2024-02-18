@@ -140,7 +140,7 @@ class DateTime(datetime.datetime):
 
     def tostring(
         self,
-        format: str = DateFormat.DEFAULT,
+        format: str = None,
         tz_info: datetime.timezone = None,
     ) -> str:
         '''
@@ -162,6 +162,9 @@ class DateTime(datetime.datetime):
             #     return x.strftime(format)
 
         return self.strftime(format)
+
+    def __str__(self) -> str:
+        return self.tostring(None)
 
     def date(self) -> DateTime:
         return DateTime(super().date())
