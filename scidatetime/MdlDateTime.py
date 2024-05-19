@@ -234,9 +234,10 @@ class DateTime(datetime.datetime):
             return f'{int(v_time/7)}周{suffix}'
 
         if v_time < 365:
-            y_month = 12*(target.year - self.year)
-            v_month = y_month + target.month - self.month + 120
-            v_month %= 12
+            y_month = 12*(self.year-target.year)
+            v_month = y_month + self.month - target.month
+            if v_month < 0:
+                v_month = -v_month
             return f'{v_month}月{suffix}'
 
         v_year = abs(self.year - target.year)

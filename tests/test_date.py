@@ -44,6 +44,12 @@ def test_date():
     x2 = DateTime.fromstring('2023-02-01 15:16:11.355789')
     assert x2.toRelativeTime(x) == '2周后'
 
+    x2 = DateTime.fromstring('2023-12-01 15:16:11.355789')
+    assert x2.toRelativeTime(x) == '11月后'
+
+    x2 = DateTime.fromstring('2024-12-01 15:16:11.355789')
+    assert x2.toRelativeTime(x) == '1年后'
+
     x2 = DateTime.fromstring('2023-01-16 15:16:11.355789')
     assert x2.toRelativeTime(x) == '55分钟前'
 
