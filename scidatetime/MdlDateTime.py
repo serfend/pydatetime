@@ -5,6 +5,7 @@ from typing import overload
 import datetime
 from time import timezone as time_timezone
 from .dateutil.parser import parser, parserinfo
+
 _EPOCH = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
 
 
@@ -32,60 +33,76 @@ class DateTime(datetime.datetime):
     Default_Format_Converter: typing.Callable = None
 
     @overload
-    def __new__(cls, date: datetime.datetime):
-        ...
+    def __new__(cls, date: datetime.datetime): ...
 
     @overload
-    def __new__(cls, date: datetime.date):
-        ...
+    def __new__(cls, date: datetime.date): ...
 
     @overload
-    def __new__(cls, date: str):
-        ...
+    def __new__(cls, date: str): ...
 
     @overload
     def __new__(
-            cls, year: int, month: int, day: int,
-            hour: int = ..., minute: int = ..., second: int = ...,
-            microsecond: int = ...,
-            tzinfo: datetime.timezone | None = ..., *, fold: int = ...):
-        ...
-
-    def __new__(
-        cls, year: int = ..., month: int = ..., day: int = ...,
-        hour: int = ..., minute: int = ..., second: int = ...,
+        cls,
+        year: int,
+        month: int,
+        day: int,
+        hour: int = ...,
+        minute: int = ...,
+        second: int = ...,
         microsecond: int = ...,
-        tzinfo: datetime.timezone | None = ..., *, fold: int = 0,
+        tzinfo: datetime.timezone | None = ...,
+        *,
+        fold: int = ...,
+    ): ...
+
+    def __new__(
+        cls,
+        year: int = ...,
+        month: int = ...,
+        day: int = ...,
+        hour: int = ...,
+        minute: int = ...,
+        second: int = ...,
+        microsecond: int = ...,
+        tzinfo: datetime.timezone | None = ...,
+        *,
+        fold: int = 0,
     ):
         if year is None:
             return DateTime('2000-1-1')  # default set timestamp
 
+        if tzinfo is None or tzinfo is Ellipsis:  # 无时区时，默认使用当前时区
+            d = datetime.timedelta(seconds=-time_timezone)
+            tzinfo = datetime.timezone(d)
+
         ii = isinstance
         if year is Ellipsis:
-            return DateTime.now()
+            return cls.now(tzinfo)
         if ii(year, float):
             year = int(year)
         if ii(year, int) and month is Ellipsis:
-            return DateTime.fromtimestamp(year)
+            return cls.fromtimestamp(year, tzinfo)
         if ii(year, str):
-            x = DateTime.fromstring(year)
+            x = cls.fromstring(year, tzinfo)
             return x
         if ii(year, datetime.datetime):
             x = year
             args = (
-                x.year, x.month, x.day,
-                x.hour, x.minute, x.second, x.microsecond,
+                x.year,
+                x.month,
+                x.day,
+                x.hour,
+                x.minute,
+                x.second,
+                x.microsecond,
                 x.tzinfo,
             )
-            return DateTime(*args, fold=x.fold)
+            return cls(*args, fold=x.fold)
 
         elif ii(year, datetime.date):
             x: datetime.date = year
-            return DateTime(x.year, x.month, x.day, 0, 0, 0, 0, None, fold=0)
-
-        if tzinfo is None or tzinfo is Ellipsis:  # 无时区时，默认使用当前时区
-            d = datetime.timedelta(seconds=-time_timezone)
-            tzinfo = datetime.timezone(d)
+            return cls(x.year, x.month, x.day, 0, 0, 0, 0, None, fold=0)
 
         if year is Ellipsis:
             year = 2000
@@ -102,18 +119,19 @@ class DateTime(datetime.datetime):
         if microsecond is Ellipsis:
             microsecond = 0
 
-        t = super().__new__(cls, year, month, day, hour, minute,
-                            second, microsecond, tzinfo, fold=fold)
+        t = super().__new__(cls, year, month, day, hour, minute, second, microsecond, tzinfo, fold=fold)
         return t
 
     @classmethod
-    def fromstring(cls, date_str: str, dayfirst=False, yearfirst=False):
-        r = parser(info=parserinfo(
-            dayfirst=dayfirst,
-            yearfirst=yearfirst,
-        )).parse(date_str)
+    def fromstring(cls, date_str: str, dayfirst=False, yearfirst=False, tzinfo=...):
+        r = parser(
+            info=parserinfo(
+                dayfirst=dayfirst,
+                yearfirst=yearfirst,
+            )
+        ).parse(date_str)
 
-        return cls(r)
+        return cls(r, tzinfo=tzinfo)
 
     def getDelta(self, tzinfo: datetime.timezone = None):
         if tzinfo is None:
@@ -126,9 +144,9 @@ class DateTime(datetime.datetime):
         return -x.utcoffset().total_seconds()
 
     def getTime(self, delta: int = None) -> int:
-        '''
+        """
         获取毫秒时间戳，并将时间输出为当前时区时间
-        '''
+        """
         # 若未定义当前时区，则使用当前计算机时区
         if delta is None:
             delta = 0  # self.getDelta()
@@ -143,11 +161,11 @@ class DateTime(datetime.datetime):
         format: str = None,
         tz_info: datetime.timezone = None,
     ) -> str:
-        '''
+        """
         格式化输出字符串，默认输出UTC+00:00的数值
         @param format:str:输出的格式
         @param tz_info:TzInfo:时区信息
-        '''
+        """
         if format is None:
             format = DateTime.Default_Format
         if isinstance(format, DateFormat):
@@ -170,17 +188,17 @@ class DateTime(datetime.datetime):
         return DateTime(super().date())
 
     @classmethod
-    def now(cls):
-        '''
+    def now(cls, tz_info=None):
+        """
         获取当前DateTime
-        '''
-        return super().now()
+        """
+        return super().now(tz_info)
 
     @classmethod
     def today(cls):
-        '''
+        """
         获取今日date
-        '''
+        """
         return DateTime(super().today()).date()
 
     @classmethod
@@ -207,11 +225,11 @@ class DateTime(datetime.datetime):
         target: DateTime = ...,
         show_full_date_if_over: int = None,
     ) -> str:
-        '''
+        """
         转换时间为相对时间
         @param target:DateTime:对比的时间，默认是现在
         @param show_full_date_if_over:int:当相差时间（天数）过多时返回绝对时间
-        '''
+        """
         if target is Ellipsis:
             target = DateTime(tzinfo=self.tzinfo)
         target = DateTime(target)
@@ -234,7 +252,7 @@ class DateTime(datetime.datetime):
             return f'{int(v_time/7)}周{suffix}'
 
         if v_time < 365:
-            y_month = 12*(self.year-target.year)
+            y_month = 12 * (self.year - target.year)
             v_month = y_month + self.month - target.month
             if v_month < 0:
                 v_month = -v_month

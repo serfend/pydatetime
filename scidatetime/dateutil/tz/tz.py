@@ -33,8 +33,32 @@ except ImportError:
 # For warning about rounding tzinfo
 from warnings import warn
 
-ZERO = datetime.timedelta(0)
-EPOCH = datetime.datetime.utcfromtimestamp(0)
+
+class Zero_TZInfo(datetime.tzinfo):
+    def utcoffset(self, dt):
+        return datetime.timedelta(hours=0)
+
+    def dst(self, dt):
+        return datetime.timedelta(hours=1)
+
+    def tzname(self, dt):
+        return "UTC0"
+
+class CN_TZInfo(datetime.tzinfo):
+    def utcoffset(self, dt):
+        return datetime.timedelta(hours=8)
+
+    def dst(self, dt):
+        return datetime.timedelta(hours=1)
+
+    def tzname(self, dt):
+        return "zh_CN"
+
+
+ZERO = datetime.timedelta(seconds=0)
+zero_TZInfo = Zero_TZInfo()
+cN_TZInfo = CN_TZInfo()
+EPOCH = datetime.datetime.fromtimestamp(0, tz=zero_TZInfo)
 EPOCHORDINAL = EPOCH.toordinal()
 
 
@@ -71,6 +95,7 @@ class tzutc(datetime.tzinfo):
             >>> tzutc() is UTC
             True
     """
+
     def utcoffset(self, dt):
         return ZERO
 
@@ -140,6 +165,7 @@ class tzoffset(datetime.tzinfo):
         The time zone offset in seconds, or (since version 2.6.0, represented
         as a :py:class:`datetime.timedelta` object).
     """
+
     def __init__(self, name, offset):
         self._name = name
 
@@ -202,6 +228,7 @@ class tzlocal(_tzinfo):
     """
     A :class:`tzinfo` subclass built around the ``time`` timezone functions.
     """
+
     def __init__(self):
         super(tzlocal, self).__init__()
 
@@ -946,6 +973,7 @@ class tzrange(tzrangebase):
         True
 
     """
+
     def __init__(self, stdabbr, stdoffset=None,
                  dstabbr=None, dstoffset=None,
                  start=None, end=None):
@@ -1076,6 +1104,7 @@ class tzstr(tzrange):
     .. _`GNU C Library: TZ Variable`:
         https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html
     """
+
     def __init__(self, s, posix_offset=False):
         global parser
         from .dateutil.parser import _parser as parser
@@ -1261,6 +1290,7 @@ class tzical(object):
 
     .. _`RFC 5545`: https://tools.ietf.org/html/rfc5545
     """
+
     def __init__(self, fileobj):
         global rrule
         from .dateutil import rrule
@@ -1542,6 +1572,7 @@ def __get_gettz():
         .. _`"same zone" semantics`:
             https://blog.ganssle.io/articles/2018/02/aware-datetime-arithmetic.html
         """
+
         def __init__(self):
 
             self.__instances = weakref.WeakValueDictionary()
@@ -1837,6 +1868,7 @@ except ImportError:
         Class for wrapping contexts so that they are passed through in a
         with statement.
         """
+
         def __init__(self, context):
             self.context = context
 
