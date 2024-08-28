@@ -1,2 +1,2 @@
-from tests.test_date import test_date as func
+from tests.test_timestamp import test_fixed_second as func
 func()

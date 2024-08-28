@@ -551,10 +551,10 @@ class _ymd(list):
                     self.ystridx == 0 or
                         (yearfirst and self[1] <= 12 and self[2] <= 31)):
                     # 99-01-01
-                    if dayfirst and self[2] <= 12:
-                        year, day, month = self
-                    else:
-                        year, month, day = self
+                    # if dayfirst and self[2] <= 12:
+                    #     year, day, month = self
+                    # else:
+                    year, month, day = self
                 elif self[0] > 12 or (dayfirst and self[1] <= 12):
                     # 13-01-01
                     day, month, year = self
